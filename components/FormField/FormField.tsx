@@ -1,15 +1,39 @@
+'use client'
+import {useState} from "react";
+
 interface Props {
+    label: string
     title: string,
     type: "text" | "mail" | "phone" | "select",
     placeholder?: string
+    customClassName?: string
+    options?: string[];
+    defaultValue?: string;
+    value: string | null;
+    onChange: (value: string) => void;
 }
 
 const FormField = (props: Props) => {
-    const inputId = `input-${props.type}-${Math.random().toString(36).substring(7)}`;
+
+    const inputStyles = [
+        "text-accent",
+        "w-full",
+        "p-5",
+        "rounded-lg",
+        "border",
+        "border-base-beige-500",
+        "border-solid",
+        "border-2",
+        "placeholder-accent-soft",
+        "focus:outline-none",
+        "focus:ring-1",
+        "focus:ring-accent-soft",
+        "focus:border-accent-soft"
+    ]
 
     return (
-        <div className={"mb-5"}>
-            <label htmlFor={inputId} className={"text-accent font-bold mb-2"}>{props.title}</label>
+        <div className={`${props.customClassName} mb-5`}>
+            <label htmlFor={props.label} className={"text-accent font-bold mb-2 block"}>{props.title}</label>
             {(() => {
                 switch (props.type) {
                     case "text":
@@ -17,22 +41,32 @@ const FormField = (props: Props) => {
                     case "phone":
                         return (
                             <input
-                                id={inputId}
-                                name={inputId}
+                                id={props.label}
+                                name={props.label}
                                 type={props.type}
                                 className={
-                                    "text-accent w-full p-5 rounded-lg border border-base-beige-500 border-solid border-2 placeholder-accent-soft focus:outline-none focus:ring-1 focus:ring-accent-soft focus:border-accent-soft"
+                                    inputStyles.join(' ')
                                 }
                                 placeholder={props.placeholder}
+                                value={props.value}
+                                onChange={(e) => props.onChange(e.target.value)}
                             />
                         );
                     case "select":
                         return (
-                            <select id={inputId} name={inputId} >
-                                <option value="volvo">Volvo</option>
-                                <option value="saab">Saab</option>
-                                <option value="fiat">Fiat</option>
-                                <option value="audi">Audi</option>
+                            <select
+                                id={props.label}
+                                name={props.label}
+                                className={inputStyles.join(" ")}
+                                value={props.value}
+                                onChange={(e) => props.onChange(e.target.value)}
+                            >
+                                {props.options &&
+                                props.options.map((option, index) => (
+                                    <option key={index} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
                             </select>
                         );
                 }
@@ -40,5 +74,6 @@ const FormField = (props: Props) => {
         </div>
     )
 };
+
 
 export default FormField;
